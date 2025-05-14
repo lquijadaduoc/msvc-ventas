@@ -11,6 +11,7 @@ import cl.duoc.msvc_ventas.model.claves.DetalleVentaId;
 import cl.duoc.msvc_ventas.model.dto.DtoVentaPost;
 import cl.duoc.msvc_ventas.model.interfaces.DetalleVentaInterface;
 import cl.duoc.msvc_ventas.repositories.DetalleVentaRepository;
+import cl.duoc.msvc_ventas.repositories.VentaRepository;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -18,6 +19,9 @@ public class VentaService {
     
     @Autowired
     private DetalleVentaRepository repository;
+
+    @Autowired
+    private VentaRepository repoVenta;
 
     public List<DetalleVentaInterface> obtenerDetallePorNumeroVenta(Integer numeroVenta){
         return repository.obtenerDetallePorNumeroVenta(numeroVenta);
@@ -32,7 +36,7 @@ public class VentaService {
         venta.setIdBodega(postVenta.getIdBodega());
         venta.setIdUsuario(postVenta.getIdUsuario());
 
-        repository.save(venta);
+        repoVenta.save(venta);
 
         for (DtoVentaPost.DetalleRequestVenta det : postVenta.getDetalles()) {
             DetalleVenta detalle = new DetalleVenta();
