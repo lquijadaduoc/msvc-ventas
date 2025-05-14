@@ -1,0 +1,34 @@
+package cl.duoc.msvc_ventas.controllers;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import cl.duoc.msvc_ventas.model.interfaces.DetalleVentaInterface;
+import cl.duoc.msvc_ventas.services.VentaService;
+
+import java.util.List;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+
+@RestController
+@RequestMapping("/api/v1/ventas")
+public class VentaController {
+
+    @Autowired
+    private VentaService service;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> obtenerDetalleVenta(@PathVariable Integer id) {
+        List<DetalleVentaInterface> productoOptional = service.obtenerDetallePorNumeroVenta(id);
+        if (productoOptional.size() > 0) {
+            return ResponseEntity.ok(productoOptional);
+        }
+        return ResponseEntity.notFound().build();
+    }
+    
+}
