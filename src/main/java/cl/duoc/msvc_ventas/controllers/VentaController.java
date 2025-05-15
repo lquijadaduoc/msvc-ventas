@@ -3,12 +3,13 @@ package cl.duoc.msvc_ventas.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cl.duoc.msvc_ventas.model.dto.DtoVentaPost;
-import cl.duoc.msvc_ventas.model.interfaces.DetalleVentaInterface;
+import cl.duoc.msvc_ventas.model.dto.DtoVentaRequest;
+import cl.duoc.msvc_ventas.model.dto.DtoVentaResponse;
 import cl.duoc.msvc_ventas.services.VentaService;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,20 +28,30 @@ public class VentaController {
     @Autowired
     private VentaService service;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> obtenerDetalleVenta(@PathVariable Integer id) {
-        List<DetalleVentaInterface> productoOptional = service.obtenerDetallePorNumeroVenta(id);
-        if (productoOptional.size() > 0) {
-            return ResponseEntity.ok(productoOptional);
-        }
-        return ResponseEntity.notFound().build();
-    }
-
     @PostMapping
-    public ResponseEntity<?> crearVenta(@RequestBody DtoVentaPost postVenta) {
+    public ResponseEntity<?> crearVenta(@RequestBody DtoVentaRequest postVenta) {
             service.crearVentaConDetalles(postVenta);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     
-    
+    @GetMapping("/{id}")
+    public ResponseEntity<?> obtenerVenta(@PathVariable Integer id) {
+        try {
+            DtoVentaResponse dto = service.obtenerVenta(id);
+            return ResponseEntity.ok(dto);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/{fecha}")
+    public ResponseEntity<List<DtoVentaResponse>> obtenerVentasPorFecha(@PathVariable String fecha) {
+        try {
+            LocalDate fechaVenta = LocalDate.parse(fecha); // Formato: yyyy-MM-dd
+            List<DtoVentaResponse> ventas = service.obtenerVentasPorFecha(fechaVenta);
+            return ResponseEntity.ok(ventas);
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }
