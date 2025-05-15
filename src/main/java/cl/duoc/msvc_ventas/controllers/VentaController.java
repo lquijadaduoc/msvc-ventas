@@ -5,11 +5,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cl.duoc.msvc_ventas.model.dto.DtoVentaRequest;
 import cl.duoc.msvc_ventas.model.dto.DtoVentaResponse;
+import cl.duoc.msvc_ventas.model.interfaces.DetalleVentaInterface;
 import cl.duoc.msvc_ventas.services.VentaService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,15 @@ public class VentaController {
 
     @Autowired
     private VentaService service;
+
+    @GetMapping("/detalle/{id}")
+    public ResponseEntity<?> obtenerDetalleVenta(@PathVariable Integer id) {
+        List<DetalleVentaInterface> ventasOptional = service.obtenerDetallePorNumeroVenta(id);
+        if (ventasOptional.size() > 0) {
+            return ResponseEntity.ok(ventasOptional);
+        }
+        return ResponseEntity.notFound().build();
+    }
 
     @PostMapping
     public ResponseEntity<?> crearVenta(@RequestBody DtoVentaRequest postVenta) {
