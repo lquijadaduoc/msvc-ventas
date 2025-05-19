@@ -29,6 +29,10 @@ public class VentaService {
         return repository.obtenerDetallePorNumeroVenta(numeroVenta);
     }
 
+    public DetalleVentaInterface obtenerReporteFecha(LocalDate fecha){
+        return repository.obtenerReportebyFecha(fecha);
+    }
+
     @Transactional
     public void crearVentaConDetalles(DtoVentaRequest postVenta) {
         Venta venta = new Venta();
@@ -99,6 +103,31 @@ public class VentaService {
             dto.setProductos(detalles);
             return dto;
         }).toList();
+    }
+
+    public DtoVentaResponse eliminarVenta(Integer numeroVenta) {
+        Venta venta = repoVenta.findById(numeroVenta)
+                .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
+
+        DtoVentaResponse dto = new DtoVentaResponse();
+        dto.setNumeroVenta(venta.getNumeroVenta());
+        dto.setFechaVenta(venta.getFechaVenta());
+        dto.setCorreoCliente(venta.getCorreoCliente());
+        dto.setEstadoVenta(venta.getEstadoVenta());
+        dto.setIdBodega(venta.getIdBodega());
+        dto.setIdUsuario(venta.getIdUsuario());
+
+        List<DtoVentaResponse.DetalleResponseVenta> detalles = venta.getProductos().stream().map(det -> {
+            DtoVentaResponse.DetalleResponseVenta d = new DtoVentaResponse.DetalleResponseVenta();
+            d.setIdProducto(det.getId().getIdProducto());
+            d.setCantidad(det.getCantidad());
+            d.setPrecio(det.getPrecio());
+            return d;
+        }).toList();
+
+        dto.setProductos(detalles);
+        repoVenta.deleteById(numeroVenta);
+        return dto;
     }
 
 }

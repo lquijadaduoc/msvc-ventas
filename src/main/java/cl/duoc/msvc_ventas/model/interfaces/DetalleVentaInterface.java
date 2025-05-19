@@ -9,4 +9,6 @@ public interface DetalleVentaInterface {
     String getNombreProducto();
     LocalDate getFechaVenta();
     Integer getPrecioUnitario();
+    Integer getCantidadVendidas();
+    Integer getTotalVendido();
 }

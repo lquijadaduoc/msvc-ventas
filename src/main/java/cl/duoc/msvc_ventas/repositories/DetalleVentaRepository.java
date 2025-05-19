@@ -1,5 +1,6 @@
 package cl.duoc.msvc_ventas.repositories;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -25,4 +26,15 @@ public interface DetalleVentaRepository extends CrudRepository<DetalleVenta,Deta
         WHERE dv.numero_venta = :numeroVenta
         """, nativeQuery = true)
     List<DetalleVentaInterface> obtenerDetallePorNumeroVenta(@Param("numeroVenta") Integer numeroVenta);
+
+    @Query(value = """
+        SELECT 
+            count(dv.numero_venta) as cantidadVendida,
+            sum(cantidad*precio) as totalVendido
+        FROM detalle_venta dv
+        JOIN venta v ON dv.numero_venta = v.numero_venta
+        JOIN baseproductos.producto p ON dv.id_producto = p.id_producto
+        WHERE dv.fechaVenta = :fechaVenta
+        """, nativeQuery = true)
+    DetalleVentaInterface obtenerReportebyFecha(@Param("fechaVenta") LocalDate fechaVenta);
 }

@@ -16,6 +16,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,6 +64,27 @@ public class VentaController {
             return ResponseEntity.ok(ventas);
         } catch (DateTimeParseException e) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/reportes/{fecha}")
+    public ResponseEntity<?> obtenerReporteFecha(@PathVariable String fecha) {
+
+        try {
+            LocalDate fechaVenta = LocalDate.parse(fecha);
+            DetalleVentaInterface ventasOptional = service.obtenerReporteFecha(fechaVenta);
+            return ResponseEntity.ok(ventasOptional);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarVenta(@PathVariable Integer id) {
+        try {
+            DtoVentaResponse dto = service.eliminarVenta(id);
+            return ResponseEntity.ok(dto);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.notFound().build();
         }
     }
 }
