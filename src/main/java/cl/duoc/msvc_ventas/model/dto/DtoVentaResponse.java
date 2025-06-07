@@ -3,8 +3,12 @@ package cl.duoc.msvc_ventas.model.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class DtoVentaResponse {
     private Integer numeroVenta;
@@ -15,6 +19,8 @@ public class DtoVentaResponse {
     private Integer idUsuario;
     private List<DetalleResponseVenta> productos;
 
+    @AllArgsConstructor
+    @NoArgsConstructor
     @Data
     public static class DetalleResponseVenta {
         private Integer idProducto;

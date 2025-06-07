@@ -1,6 +1,7 @@
 package cl.duoc.msvc_ventas.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -29,5 +30,10 @@ public class Venta {
     private Integer idUsuario;
 
     @OneToMany(mappedBy = "venta") 
-    private List<DetalleVenta> productos;
+    private List<DetalleVenta> productos= new ArrayList<>();
+
+    public void addProducto(DetalleVenta producto) {
+        productos.add(producto);
+        producto.setVenta(this);
+    }
 }

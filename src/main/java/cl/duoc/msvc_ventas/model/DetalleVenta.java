@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class DetalleVenta {
     
+
     @EmbeddedId
     private DetalleVentaId id;
 
